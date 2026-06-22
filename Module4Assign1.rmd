@@ -1,0 +1,44 @@
+```{r}
+
+install.packages('VIM')
+install.packages("mice")
+
+library(tidyverse)
+library(VIM)
+library(mice)
+
+grades <- read.csv("class-grades.csv")
+```
+```{r}
+colSums(is.na(grades))
+```
+
+```{r}
+aggr(grades, numbers = TRUE, prop = FALSE)
+```
+
+```{r}
+grades_row_delete = na.omit(grades)
+nrow(grades_row_delete)
+```
+
+```{r}
+grades_col_delete <- grades[, colSums(is.na(grades)) == 0]
+ncol(grades_col_delete)
+```
+
+```{r}
+set.seed(123)
+
+imp <- mice(
+  grades,
+  m = 5,
+  method = "pmm",
+  seed = 123
+)
+
+grades_imputed <- complete(imp)
+
+mean(grades_imputed$Final)
+```
+
